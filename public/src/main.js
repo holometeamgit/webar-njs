@@ -41,7 +41,7 @@ function initAccelerometer(){
 		}
 	
 		DeviceOrientationEvent.requestPermission().then(response => { 
-			
+			console.log("response", response)
 			log1.innerText = response
 			if (response == 'granted') {
 				accelerometerIsGranted = true
@@ -53,6 +53,7 @@ function initAccelerometer(){
 			 
 			tapButton.style.visibility='visible'
 		}).catch(error => { 
+			console.log("error", error)
 			debag.innerText = "4 " + isInteractable
 			tapButton.style.visibility='visible'
 			// console.log("+error+ ", error)  
@@ -61,6 +62,7 @@ function initAccelerometer(){
 		// DeviceOrientationEvent.requestPermission().then(response => { }).catch(console.error)
 	} catch (err) {
 		debag.innerText = "5"
+		console.log("err", err)
 		// console.log("error ", err)
 		// console.log("tut1", err)
 		// tapButton.style.visibility='hidden'
@@ -164,7 +166,8 @@ document.addEventListener('touchmove', function (event) {
 
 
 window.addEventListener('mousedown', function(e) {
-	// return
+	console.log("mousedown")
+	return
 	if ( !workerReady ){ //!mainOpenCvIsReady || (!workerReady)
 		return
 	}
