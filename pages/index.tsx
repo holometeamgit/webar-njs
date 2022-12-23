@@ -19,6 +19,7 @@ export default function Home() {
 
       <script defer src="src/main.js" ></script>
 
+
       <button id="tapButton" className={styles.button} type="submit" onClick={ (event) => { tap() } } > {"Init Sensors"} </button>
 
       <div id="debag" className={styles.divs} > loading </div> 
