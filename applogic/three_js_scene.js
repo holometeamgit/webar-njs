@@ -17,13 +17,13 @@ var lightAmb = new THREE.AmbientLight(0x777777);
 scene.add(lightAmb);
 
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.domElement.id = "renderer"
-document.body.appendChild(renderer.domElement);
-renderer.domElement.style.left = 0
-renderer.domElement.style.top = 0
-renderer.domElement.style.position = "absolute"
+// var renderer = new THREE.WebGLRenderer();
+// renderer.setSize(window.innerWidth, window.innerHeight);
+// renderer.domElement.id = "renderer"
+// document.body.appendChild(renderer.domElement);
+// renderer.domElement.style.left = 0
+// renderer.domElement.style.top = 0
+// renderer.domElement.style.position = "absolute"
 
 // here
 

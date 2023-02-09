@@ -66,43 +66,7 @@ function getBuffer(){
 
 
 // main method to get image data resize it and send to WebWorker
-function runInBackground(){
 
-	var preVisionTimeS = Date.now()
-	// draw in hidden canvas, ThreeJS gets image of camera from it in three_js_scene.js
-	bufferCanvasCtx.drawImage(video, 0, 0)
-
-	// if user have no already tap on screen and put axies we only update on hiddenCanvasCtx frame from camera
-	if (squarePoints == null){
-		hiddenCanvasCtx.drawImage(video, 0, 0)
-		setTimeout(runInBackground, cameraFrameTimeout);
-		return
-	}
-
-	isRestart = updateTrackingStateAndCheckRestart()
-	// if start of axis is not in camera frame we only update on hiddenCanvasCtx frame from camera withou update camera position
-	if (isTracking == false){
-		hiddenCanvasCtx.drawImage(video, 0, 0)
-		log1.innerText = "tracking " + isTracking + " " + calkedCameraPosition[0].toFixed(1)+ " " + calkedCameraPosition[1].toFixed(1)+ " " + calkedCameraPosition[2].toFixed(1)
-		setTimeout(runInBackground, cameraFrameTimeout);
-		return
-	}
-
-	if (isRestart){
-		squarePoints = pj.getStartPointsWithCameraPosition(calkedCameraPosition, angleX, angleY, angleZ)
-	}
-
-	let curBounds = vs.getBoundsJs(squarePoints, boundsWidth, boundsHeight, vidWidth, vidHeight, 1)
-	buffer = getBuffer()
-
-	preVisionTime = (Date.now() - preVisionTimeS)
-	startWorker = Date.now()
-
-	// send image data buffer to visionWorker to find update of camera position
-	visionWorker.postMessage({cmd: 'process', buf: buffer, curBounds : curBounds, scale : 2, isRestart : isRestart,
-		 points : squarePoints, angles : [angleX, angleY, angleZ] } , [buffer]); 
-	
-}
 
 // when user tap on screen to place axies (see main.js EventListeneres) we calculate 3D position and projection in frame points near start of axies
 function initTracking(x, y){

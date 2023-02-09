@@ -1,8 +1,11 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createRef } from 'react';
 import {tap} from '../applogic/main'
+import Renderer from '../components/Renderer'
+import Video from '../components/Video'
+import Canvas from '../components/Canvas'
 
 import {
   vidWidth, 
@@ -15,6 +18,7 @@ import {
 import {initAccelerometer} from '../applogic/main'
 
 export default function Home() {
+
   const [showTapButton, setShowTapButton] = useState(true)
   const [isInteractable, setIsInteractable] = useState(false)
 
@@ -25,32 +29,76 @@ export default function Home() {
       setIsInteractable(lIsInteractable)
   }, [])
 
+  const videoRef = createRef();
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      console.log('This will run after 1 second!')
+      runInBackground(videoRef, hiddenCanvasCtx, bufferCanvasCtx)
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, [videoRef, hiddenCanvasCtx, bufferCanvasCtx]);
+
+  const video_files = ['video.mp4', 'vidoe.ogg']
+
+  let hiddenCanvasCtx = undefined
+  let bufferCanvasCtx = undefined
+  let drawCanvasCtx = undefined
+
   return (
-    <main className={styles.main} onClick={e=>onScreenTapHandler}>
-      {/* <script defer src="assets/numeric-1.2.6.min.js" ></script>  */}
-      {/* <script defer src="assets/three.min.js" ></script> */}
-
-      {/* <script defer src="src/kalman_filter.js" ></script>
-      <script defer src="src/constrains.js" ></script>
-      <script defer src="src/projective.js" ></script>
-      <script defer src="src/wasm.js" ></script>
-      <script defer src="src/vision.js" ></script>
-      <script defer src="src/drawing.js" ></script>
-      <script defer src="src/collection.js" ></script>
-      <script defer src="src/three_js_scene.js" ></script>
-      <script defer src="src/main_flow.js" ></script> */}
-
-
-      { showTapButton && <button id="tapButton" className={styles.button} type="submit" onClick={ (event) => { tap() } } > {"Init Sensors"} </button>}
-
-      <div id="debag" className={styles.divs} > loading </div> 
-      <div id="info1" className={styles.divs} >--</div>
-
-    <video muted playsInline autoPlay id="webcam" className={styles.videos} width={vidWidth} height={vidHeight}> </video>
-    <video playsInline autoPlay id="hologram" className={styles.videos}> </video>
-
-    </main> 
+    <div>
+    <Renderer />
+    <Video video_file_name__mp4={video_files[0]} video_file_name__ogg={video_files[1]} videoRef={videoRef}/>
+    <Canvas id='hiddenCanvas' is_hidden={true} context={hiddenCanvasCtx} width={vidWidth} heigh={vidHeight}/>
+    <Canvas id='bufferCanvas'is_hidden={true} context={bufferCanvasCtx}  width={vidWidth} heigh={vidHeight}/>
+    <Canvas id='drawCanvas' is_hidden={true} context={drawCanvasCtx}  width={vidWidth} heigh={vidHeight}/>
+    </div>
   )
+
+//   function createContext(width, height) {
+//     var canvas = document.createElement('canvas');
+//     canvas.width = width;
+//     canvas.height = height;
+//     return canvas.getContext("2d");
+// }
+
+  function runInBackground(video:any, hiddenCanvasCtx, bufferCanvasCtx){
+
+    var preVisionTimeS = Date.now()
+    // draw in hidden canvas, ThreeJS gets image of camera from it in three_js_scene.js
+    bufferCanvasCtx.drawImage(video, 0, 0)
+  
+    // if user have no already tap on screen and put axies we only update on hiddenCanvasCtx frame from camera
+    if (squarePoints == null){
+      hiddenCanvasCtx.drawImage(video, 0, 0)
+      setTimeout(runInBackground, cameraFrameTimeout);
+      return
+    }
+  
+    isRestart = updateTrackingStateAndCheckRestart()
+    // if start of axis is not in camera frame we only update on hiddenCanvasCtx frame from camera withou update camera position
+    if (isTracking == false){
+      hiddenCanvasCtx.drawImage(video, 0, 0)
+      log1.innerText = "tracking " + isTracking + " " + calkedCameraPosition[0].toFixed(1)+ " " + calkedCameraPosition[1].toFixed(1)+ " " + calkedCameraPosition[2].toFixed(1)
+      setTimeout(runInBackground, cameraFrameTimeout);
+      return
+    }
+  
+    if (isRestart){
+      squarePoints = pj.getStartPointsWithCameraPosition(calkedCameraPosition, angleX, angleY, angleZ)
+    }
+  
+    let curBounds = vs.getBoundsJs(squarePoints, boundsWidth, boundsHeight, vidWidth, vidHeight, 1)
+    buffer = getBuffer()
+  
+    preVisionTime = (Date.now() - preVisionTimeS)
+    startWorker = Date.now()
+  
+    // send image data buffer to visionWorker to find update of camera position
+    visionWorker.postMessage({cmd: 'process', buf: buffer, curBounds : curBounds, scale : 2, isRestart : isRestart,
+       points : squarePoints, angles : [angleX, angleY, angleZ] } , [buffer]); 
+    
+  }
+
 
   const onScreenTapHandler = (event) => {
     console.log(event.detail);
