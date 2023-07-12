@@ -12,7 +12,6 @@ import {vs} from 'src/logic/vision.js'
 import {constraintsSinglton} from 'src/logic/constants.js'
 import {isMobile} from 'react-device-detect';
 import {KalmanFilter, KalmanAngleFilter} from 'src/logic/kalman.js'
-import {Helmet} from "react-helmet";
 
 const webcamRef = createRef();
 const webcam = <WebcamVideo  vidRef={webcamRef}></WebcamVideo>
