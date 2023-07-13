@@ -3,7 +3,11 @@ import numeric from 'numeric';
 var pj = { };
 let side = 0.5
 
-let cx, fx, cy, fy
+let cx = 0 
+let fx = 0 
+let cy = 0 
+let fy = 0
+
 let angleX = 0
 let angleY = 0
 let angleZ = 0

@@ -19,18 +19,18 @@ const webcam = <WebcamVideo  vidRef={webcamRef}></WebcamVideo>
 const hologramRef = createRef();
 const hologram = <HologramVideo  vidRef={hologramRef}></HologramVideo>
 
-let hologrameTexture
+let hologrameTexture : any
 
-let drawCanvasRef
-let canvasRef
-let logRef
-let sceneRef
-let buttonRef
+let drawCanvasRef : any
+let canvasRef : any
+let logRef : any
+let sceneRef : any
+let buttonRef : any
 
-let squarePoints
-let filteredCalkedCameraPosition
-let curCameraPosition
-let startDist2Touches
+let squarePoints = null
+let filteredCalkedCameraPosition = null
+let curCameraPosition : any
+let startDist2Touches = null
 
 let isInteractable = true
 let workerReady = false
@@ -164,7 +164,7 @@ export default function App() {
 
     constraintsCallback()
 
-    if (squarePoints !== undefined){
+    if (squarePoints !== null){
       if (needDrawPoints){
         drawPoints(squarePoints)
       }

@@ -10,15 +10,15 @@ let orbMul = 1.2
 let maxPointsCount = 200
 let success = true
 
-let orb
-let mask
-let collection
-let kps0 
-let kps1
-let kps2
-let decs1
-let decs2
-let prevHomo
+let orb = null
+let mask = null
+let collection = null
+// let kps0  : any
+// let kps1
+// let kps2
+// let decs1
+// let decs2
+// let prevHomo
 
 function tryOpenCVLoop(){
     try {
