@@ -27,10 +27,10 @@ let logRef : any
 let sceneRef : any
 let buttonRef : any
 
-let squarePoints = null
-let filteredCalkedCameraPosition = null
+let squarePoints: any = null
+let filteredCalkedCameraPosition: any = null
 let curCameraPosition : any
-let startDist2Touches = null
+let startDist2Touches: any = null
 
 let isInteractable = true
 let workerReady = false
